@@ -4,7 +4,11 @@ A couple weeks ago a i came across a particular configuration parameter in Googl
 
 * `access_settings.gcip_settings`: Use Identity Platform for authentication 
 
-GCPIP is ofcourse [Google Cloud Identity Platform][https://cloud.google.com/identity-platform/docs/] but its inclusion into a config parameter for IAP suggested you could integrate identity platform tokens with IAP.  I was intrigued because up until this time, IAP only allowed Google's first party auth system though.  What i mean by that is you had to startup with a google identity (user or serviceAccount) to access an app behind IAP (google being the 1st party here!).  However, GCPIP allows for 3rd party identities and authentication systems for standard oauth2 providers (eg. `Yahoo`, `Facebook`),  bring your own `OIDC` (OpenId Connect) or `SAML` sample or just plain old username/password.  Why the integration of GCPIP and IAP was interesting was because these 3rd party identities didn't 'mean anything' to Google Cloud in the sense that you can use a user's that logged into GCPIP it to access (non-Firebases) APIs and services on GCP like invoke the Compute Engine API or`PubSub`.
+GCPIP is ofcourse [Google Cloud Identity Platform](https://cloud.google.com/identity-platform/docs/) but its inclusion into a config parameter for IAP suggested you could integrate identity platform tokens with IAP.  
+
+I was intrigued because up until this time, IAP only allowed Google's first party auth system though.  What i mean by that is you had to startup with a google identity (user or serviceAccount) to access an app behind IAP (google being the 1st party here!).  
+
+However, GCPIP allows for 3rd party identities and authentication systems for standard oauth2 providers (eg. `Yahoo`, `Facebook`),  bring your own `OIDC` (OpenId Connect) or `SAML` sample or just plain old username/password.  Why the integration of GCPIP and IAP was interesting was because these 3rd party identities didn't 'mean anything' to Google Cloud in the sense that you can use a user's that logged into GCPIP it to access (non-Firebases) APIs and services on GCP like invoke the Compute Engine API or`PubSub`.
 
 In looking into this a bit more, i found the following link which described part of how to set this up (or rather, what to expect on the IAP side):
 
@@ -28,7 +32,9 @@ Just for reference
 
 `IAP` is basically a super proxy inspired by Google's [BeyondCorp](https://cloud.google.com/beyondcorp/) that uses to provide user- and device-based authentication and authorization and not just a network perimeter (eg, VPN).  You use it to easily shield your web application to certain groups of users and perform [Context Aware Access Control](https://cloud.google.com/iap/docs/cloud-iap-context-aware-access-howto).
 
-`Cloud Identity Platform` is basically Google Cloud's Customer Identity management solution similar to `Auth0` Or `Okta`.  As with any CIAM solution, you can use it to manage user signup and authentication flows done though a variety of 3rd party ideneity providers.  The SDK it provides allows you to easily perform user authentication for a visitor to your application by managing the oauth2 flows against a variety of providers like `Google`, `Facebook`, `Yahoo` and much more.
+`Cloud Identity Platform` is basically Google Cloud's Customer Identity management solution similar to `Auth0` or `Okta`.  As with any CIAM solution, you can use it to manage user signup and authentication flows done though a variety of 3rd party ideneity providers.  
+
+The SDK it provides allows you to easily perform user authentication for a visitor to your application by managing the oauth2 flows against a variety of providers like `Google`, `Facebook`, `Yahoo` and much more.
 
 >> NOTE:  this tutorial is **NOT** supported by Google.  _caveat emptor_
 
