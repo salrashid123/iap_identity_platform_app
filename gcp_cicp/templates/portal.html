@@ -1,0 +1,110 @@
+
+{% extends "layout.html" %}
+{% block title %}Partner Portal{% endblock %}
+{% block head %}
+  {{ super() }}
+
+
+  <script>
+    firebase.auth().getRedirectResult()
+      .then((result) => {
+      if (result.credential) {   
+         var token = result.credential.accessToken;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  </script>
+
+  <script type="text/javascript">
+
+
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {   
+        //console.log(user);
+        email = user.email;
+        document.getElementById("footer_username").innerHTML=email;
+        console.log(JSON.stringify(user,null, 2));
+        
+        firebase.auth().currentUser.getIdToken(true).then(function(idToken) {
+          document.getElementById("gcpip_token").innerHTML=idToken;
+          // First verify the identity platform's token against your portal app
+          var xhr = new XMLHttpRequest();
+          xhr.open('POST', '/verifyIdToken');
+          xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+          xhr.send('id_token=' + idToken);
+          xhr.onreadystatechange = function() {
+            if (xhr.readyState == XMLHttpRequest.DONE) {
+              console.log("Id token verified: " + xhr.responseText);
+              email = user.email;
+
+              // now that the user's session is verified against your app, use that token
+              // to make a simple GET request against an IAP protected API application
+              // In this case, we emit the idToken in the header for the auth part
+              var axhr = new XMLHttpRequest();
+              axhr.open('GET', '{{ app_location }}');
+              axhr.setRequestHeader('Authorization', 'Bearer ' + idToken);
+              axhr.send(null);
+              axhr.onreadystatechange = function() {
+                if (this.readyState == XMLHttpRequest.DONE && this.status == 200 ) {
+                  // if authenticated and allowed by IAP, the API app simply echos' back
+                  // the JWT token specifics IAP forwarded to it
+                  console.log("API Response: " + this.responseText);
+                  document.getElementById("iap_response").innerHTML=JSON.stringify(JSON.parse(this.responseText),undefined, 4);
+                }
+              }
+              
+            }
+          }
+        }).catch(function(error) {
+          alert("Unable to get ID token for current sesson: " + error);
+          console.log("Unable to get ID token for current session:");
+        });
+
+      } else {
+        console.log("User not logged in");
+      }
+    });
+
+
+    </script>
+
+{% endblock %}
+{% block content %}
+
+<div class="container">
+
+  <h4>Service Provider Portal Page</h4>
+<br/>
+
+<hr/>
+
+<table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
+
+    <tbody>
+      <tr>
+        <td class="mdl-data-table__cell--non-numeric">GCPIP Token</td>
+        <td>
+          <div class="mdl-textfield mdl-js-textfield extrawide">
+            <textarea class="mdl-textfield" type="text" rows="25"  cols=100 id="gcpip_token" ></textarea>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="mdl-data-table__cell--non-numeric">IAP Response</td>
+        <td>
+            <textarea class="mdl-textfield extrawide" type="text" rows="25" cols=100 id="iap_response"  ></textarea>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+
+
+<br/>
+
+
+</div>
+
+{% endblock %}

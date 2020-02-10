@@ -1,0 +1,10 @@
+runtime: python37
+
+handlers:
+- url: .*
+  script: auto
+  secure: always
+
+
+env_variables:
+  GAE_USE_SOCKETS_HTTPLIB : 'anyvalue'

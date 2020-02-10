@@ -1,0 +1,42 @@
+
+{% extends "layout.html" %}
+{% block title %}Login form for Service{% endblock %}
+{% block head %}
+  {{ super() }}
+
+
+  <script type="text/javascript">
+    var uiConfig = {
+      'signInSuccessUrl': "/portal" + window.location.search,
+      'signInOptions': [
+        //https://cloud.google.com/identity-platform/docs/multi-tenancy-ui
+        firebase.auth.EmailAuthProvider.PROVIDER_ID,
+      ],
+      'tosUrl': '<your-tos-url>',
+    };
+    var ui = new firebaseui.auth.AuthUI(firebase.auth());
+
+    var queryString = window.location.search;
+    var urlParams = new URLSearchParams(queryString);
+    var tenant = urlParams.get('tenant')
+
+    if (tenant != '') {
+      console.log("Using tenantID " + tenant);
+      firebase.auth().tenantId = tenant;
+    } else {
+      tenant = 'none';
+    }
+    console.log("Login for tenantID: " + tenant);
+
+    ui.reset();
+    ui.start('#firebaseui-auth-container', uiConfig);
+  </script>
+
+{% endblock %}
+{% block content %}
+
+<div class="container">
+<br/>
+<div id="firebaseui-auth-container"></div>
+</div>
+{% endblock %}

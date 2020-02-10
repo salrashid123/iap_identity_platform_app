@@ -1,0 +1,15 @@
+.pagetitle {
+    color: #800080;
+}
+
+.container {
+    width: 500px;
+    margin: 0 auto;
+}
+
+
+.mdl-textfield{
+    width:500px;
+    font-family:"Everson Mono";
+    font-size: "12px";
+}
